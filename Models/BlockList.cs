@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace CP380_B1_BlockList.Models
 {
@@ -24,14 +25,28 @@ namespace CP380_B1_BlockList.Models
 
         public void AddBlock(Block block)
         {
-            // TODO
+            var previousBlock = Chain.Last();
+            block.PreviousHash = previousBlock.Hash;
+            block.Mine(Difficulty);
+            Chain.Add(block);
         }
 
         public bool IsValid()
         {
-            // TODO
 
-            return false;
+            if (Chain[0].fetchDifficulty() != Difficulty)
+            {
+                return false;
+            } 
+
+            for (int i = 1; i < Chain.Count(); i++)
+            {
+                if (Chain[i - 1].Hash != Chain[i].PreviousHash || Chain[i].fetchDifficulty() != Difficulty)
+                {
+                    return false;
+                }
+            }
+            return true;
         }
     }
 }

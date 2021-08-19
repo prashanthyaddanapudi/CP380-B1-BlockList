@@ -31,14 +31,8 @@ namespace CP380_B1_BlockList.Models
         public string CalculateHash()
         {
             var sha256 = SHA256.Create();
-            var json = JsonSerializer.Serialize(Data);
-
-            //
-            // TODO
-            //
-            var inputString = $""; // TODO
-
-            var inputBytes = Encoding.ASCII.GetBytes(inputString);
+            var input = JsonSerializer.Serialize(Data);
+            var inputBytes = Encoding.ASCII.GetBytes($"{TimeStamp}-{PreviousHash}-{Nonce}-{input}");
             var outputBytes = sha256.ComputeHash(inputBytes);
 
             return Base64UrlEncoder.Encode(outputBytes);
@@ -46,7 +40,24 @@ namespace CP380_B1_BlockList.Models
 
         public void Mine(int difficulty)
         {
-            // TODO
+            int currentDifficulty = fetchDifficulty();
+            if (currentDifficulty == difficulty)
+            {
+                return;
+            }
+            Nonce++;
+            Hash = CalculateHash();
+            Mine(difficulty);
+        }
+
+        public int fetchDifficulty()
+        {
+            var Difficulty = 0;
+            while (Hash[Difficulty] == 'C')
+            {
+                Difficulty++;
+            }
+            return Difficulty;
         }
     }
 }

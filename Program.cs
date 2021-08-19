@@ -9,6 +9,7 @@ namespace CP380_B1_BlockList
     {
         static void Main(string[] args)
         {
+           
             var myChain = new BlockList();
 
             List<Payload> data = new()
